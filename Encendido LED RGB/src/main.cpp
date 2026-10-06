@@ -1,66 +1,6 @@
-// #include "esp32-hal-ledc.h"
-// #include "esp32-hal.h"
 #include <Arduino.h>
-
-void Rojo(int canal_r) {
-  // Incremento del brillo
-  for (int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(canal_r, dutyCycle);
-    delay(15);
-  }
-
-  for (int dutyCycle = 255; dutyCycle >= 0; dutyCycle--) {
-    ledcWrite(canal_r, dutyCycle);
-    delay(15);
-  }
-}
-void Verde(int canal_g) {
-  // Incremento del brillo
-  for (int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(canal_g, dutyCycle);
-    delay(15);
-  }
-
-  for (int dutyCycle = 255; dutyCycle >= 0; dutyCycle--) {
-    ledcWrite(canal_g, dutyCycle);
-    delay(15);
-  }
-}
-
-void Azul(int canal_b) {
-  // Incremento del brillo
-  for (int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(canal_b, dutyCycle);
-    delay(15);
-  }
-
-  for (int dutyCycle = 255; dutyCycle >= 0; dutyCycle--) {
-    ledcWrite(canal_b, dutyCycle);
-    delay(15);
-  }
-}
-
-/*
-void Blanco(int ch_r, int ch_g,int ch_b){
-  //Incremento del brillo color blanco
-  for(int dC=0; dC<=255; dC++){
-    ledcWrite(ch_r, dC);
-    ledcWrite(ch_g, dC);
-    ledcWrite(ch_b, dC);
-    delay(15);
-  }
-
-  //Decremto del brillo color blanco
-  for(int dC=255; dC>=0; dC--){
-    ledcWrite(ch_r, dC);
-    ledcWrite(ch_g, dC);
-    ledcWrite(ch_b, dC);
-
-    delay(15);
-  }
-}
-*/
-
+// Funcion que hace que funcione todo con efecto RGB
+void R_G_B(int Ch_R, int Ch_G, int Ch_B);
 
 // Pines de los LEDS
 const int LED_PIN_R = 32;
@@ -86,8 +26,36 @@ void setup() {
   ledcAttachPin(LED_PIN_B, canal_B);
 }
 
-void loop() {
-  Rojo(canal_R);
-  Verde(canal_G);
-  Azul(canal_B);
+void loop() { R_G_B(canal_R, canal_G, canal_B); }
+
+void R_G_B(int Ch_R, int Ch_G, int Ch_B) {
+  bool rep = true;
+  // Incrementar Brillo Rojo
+  for (int dC = 0; dC < 256; dC++) {
+    ledcWrite(Ch_R, dC);
+    delay(15);
+  }
+
+  while (rep) {
+    // Decremento Brillo Rojo/Aumento Brillo Verde
+    for (int dC = 0; dC < 256; dC++) {
+      ledcWrite(Ch_R, 255 - dC);
+      ledcWrite(Ch_G, dC);
+      delay(15);
+    }
+
+    // Decremento Brillo Verde/Aumento Brillo Azul
+    for (int dC = 0; dC < 256; dC++) {
+      ledcWrite(Ch_G, 255 - dC);
+      ledcWrite(Ch_B, dC);
+      delay(15);
+    }
+
+    // Decremento Brillo Azul/Aumento Brillo Rojo
+    for (int dC = 0; dC < 256; dC++) {
+      ledcWrite(Ch_B, 255 - dC);
+      ledcWrite(Ch_R, dC);
+      delay(15);
+    }
+  }
 }
